@@ -1,11 +1,13 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 require("dotenv").config();
 
 async function connectToDB() {
   try {
-    await mongoose.connect("mongodb+srv://surajmuralisri:surajmuralisri2003@cluster0.tnjerrq.mongodb.net/");
+    await mongoose.connect("mongodb://127.0.0.1:27017/pc_test");
+                           
     console.log("DB Connected Successfully");
   } catch (error) {
+    console.log("error", error)
     console.log(`Error Connecting DB ${error.message}`);
   }
 }
