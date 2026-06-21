@@ -9,7 +9,7 @@ const uplaodFileToClodinary = async (filepath) => {
       publicId: result.public_id,
     };
   } catch (error) {
-    console.error(`Clodinary upload error ${error}`);
+    console.error(`Clodinary upload error ${error.message}`);
     throw error;
   }
 };

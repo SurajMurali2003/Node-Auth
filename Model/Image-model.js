@@ -10,6 +10,10 @@ const ImageSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    localStoredPath: {
+      type: String,
+      required: true,
+    },
     uploadedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

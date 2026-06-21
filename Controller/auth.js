@@ -41,7 +41,7 @@ const registerUser = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log("error", error);
+    console.log("error-registerUser", error);
     res.status(500).json({
       success: false,
       message: `Internal Server Error ${error.message}`,
@@ -79,7 +79,7 @@ const loginUser = async (req, res) => {
         role: loginUser?.role,
       },
       "JSON_WEB_TOKEN",
-      { expiresIn: "15m" },
+      { expiresIn: "60m" },
     );
     res.status(200).json({
       success: true,
@@ -87,7 +87,7 @@ const loginUser = async (req, res) => {
       data: accessToken,
     });
   } catch (error) {
-    console.log("error", error);
+    console.log("error-loginUser", error);
     res.status(500).json({
       success: false,
       message: `Internal Server Error ${error.message}`,
@@ -95,4 +95,52 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+//Changing Password
+const changePassword = async(req, res) => {
+  try {
+    //Get USer_id from Token
+    const userId = req.userInfo._id;
+     console.log("userId---", userId)
+    // Get password from FE
+    const {oldpswd, newpswd} = req.body;
+     console.log("passwords---", oldpswd, newpswd)
+    //Find the current logged User
+    const user = await User.findById(userId);
+    console.log("user---", user)
+
+    if(!user){
+    return  res.status(400).json({
+        success: false,
+        message: "User not Found in our DB"
+      })
+    }
+    // Check oldpswd  was same from our Db
+    const passwordMatch = await  bcrypt.compare(oldpswd, user?.password);
+     console.log("passwordMatch", passwordMatch)
+    if(!passwordMatch){
+    return  res.status(400).json({
+        success: false,
+        mmessage: "Old Password was wrong, Try again"
+      })
+    }
+
+    //update password
+    user.password = await bcrypt.hash(newpswd, 10);
+
+   await user.save();
+     res.status(200).json({
+       success: true,
+       message: "Updated Successfully",
+       data: user,
+     })
+     
+  }catch (error) {
+     console.log("error-changePassword, ", error);
+    res.status(500).json({
+      success: false,
+      message: `Internal Server Error ${error.message}`,
+    });
+  }
+}
+
+module.exports = { registerUser, loginUser, changePassword };

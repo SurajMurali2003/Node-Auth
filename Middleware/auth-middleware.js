@@ -6,7 +6,7 @@ const authMiddleware = (req, res, next) => {
     const authHeaders = req.headers["authorization"];
     //  console.log("authHeaders", authHeaders);
 
-    const token = authHeaders.split(" ")[1];
+    const token = authHeaders?.split(" ")[1];
     console.log("token", token);
 
     if (!token) {
